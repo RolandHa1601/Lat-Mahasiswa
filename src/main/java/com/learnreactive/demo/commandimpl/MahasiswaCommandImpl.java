@@ -15,44 +15,79 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+//@Service
+//@Slf4j
+//public class MahasiswaCommandImpl implements MahasiswaCommand {
+////    @Autowired
+////    MahasiswaRepository mahasiswaRepository;
+//
+//    Map<String,Mahasiswa> mhsMap =  new HashMap<>();
+//
+//    @Override
+//    public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa) {
+//        return Mono.just(mahasiswa).
+//                map(mahasiswa1 -> {
+//                    mhsMap.put(mahasiswa.getNim(),mahasiswa);
+//                    return mahasiswa1;
+//                });
+//    }
+//
+//    @Override
+//    public Mono<Mahasiswa> updateMahasiswa(Mahasiswa mahasiswa) {
+//        return Mono.just(mahasiswa).
+//                map(mahasiswa1 -> {
+//                    mhsMap.put(mahasiswa.getNim(),mahasiswa);
+//                    return mahasiswa1;
+//                });
+//    }
+//
+//    @Override
+//    public Flux<Mahasiswa> findAllMahasiswa() {
+//        return Flux.fromIterable(mhsMap.values());
+//    }
+//
+//    @Override
+//    public Mono<Mahasiswa> getOneMahasiswa(String nim) {
+//        return Mono.just(mhsMap.get(nim));
+//    }
+//
+//    @Override
+//    public Mono<Mahasiswa> deleteMahasiswa(String nim) {
+//        return Mono.just(mhsMap.remove(nim));
+//    }
+//}
+
+
 @Service
 @Slf4j
 public class MahasiswaCommandImpl implements MahasiswaCommand {
-//    @Autowired
-//    MahasiswaRepository mahasiswaRepository;
+    @Autowired
+    MahasiswaRepository mahasiswaRepository;
 
     Map<String,Mahasiswa> mhsMap =  new HashMap<>();
 
     @Override
     public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa) {
-        return Mono.just(mahasiswa).
-                map(mahasiswa1 -> {
-                    mhsMap.put(mahasiswa.getNim(),mahasiswa);
-                    return mahasiswa1;
-                });
+        return mahasiswaRepository.save(mahasiswa);
     }
 
     @Override
     public Mono<Mahasiswa> updateMahasiswa(Mahasiswa mahasiswa) {
-        return Mono.just(mahasiswa).
-                map(mahasiswa1 -> {
-                    mhsMap.put(mahasiswa.getNim(),mahasiswa);
-                    return mahasiswa1;
-                });
+        return mahasiswaRepository.save(mahasiswa);
     }
 
     @Override
     public Flux<Mahasiswa> findAllMahasiswa() {
-        return Flux.fromIterable(mhsMap.values());
+        return mahasiswaRepository.findAll();
     }
 
     @Override
     public Mono<Mahasiswa> getOneMahasiswa(String nim) {
-        return Mono.just(mhsMap.get(nim));
+        return mahasiswaRepository.findById(nim);
     }
 
     @Override
-    public Mono<Mahasiswa> deleteMahasiswa(String nim) {
-        return Mono.just(mhsMap.remove(nim));
+    public Mono<Void> deleteMahasiswa(String nim) {
+        return mahasiswaRepository.deleteById(nim);
     }
 }

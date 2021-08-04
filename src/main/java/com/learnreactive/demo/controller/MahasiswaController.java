@@ -25,8 +25,12 @@ public class MahasiswaController {
     }
 
     @GetMapping("/delete/{nim}")
-    public Mono<Mahasiswa> deleteMahasiswa(@PathVariable  String nim){
-        return mahasiswaCommand.deleteMahasiswa(nim);
+    public Mono<String> deleteMahasiswa(@PathVariable  String nim){
+        return mahasiswaCommand.deleteMahasiswa(nim).map(
+                e-> {
+                     return "ok";
+                }
+        );
     }
 
     @PutMapping("/update")

@@ -14,5 +14,5 @@ public interface MahasiswaCommand {
 
     public Mono<Mahasiswa> getOneMahasiswa(String nim);
 
-    public Mono<Mahasiswa> deleteMahasiswa(String nim);
+    public Mono<Void> deleteMahasiswa(String nim);
 }
