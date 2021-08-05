@@ -23,13 +23,35 @@ public class testFlux {
                         s-> {
                             return Flux.fromIterable(convertToList(s));
                         }
-                );
+                ).map(s -> {
+                    System.out.println(s);
+                    return s;
+                })
 //                .subscribe(System.out::println)
-//                .log();
+                .log();
 
         StepVerifier.create(test).expectNextCount(8).verifyComplete();
 //        test.subscribe(System.out::println, (e) -> System.out.println(e));
     }
+
+    @Test
+    public void fluxString(){
+        Flux<String> test = Flux.fromIterable(Arrays.asList("a","b","c","d","e"))
+                .window(2)
+                .flatMap(s -> s.map(adsa -> adsa))
+                .log();
+//                .flatMap(
+//                        s-> s.map(this::convertToList.subscribeOn(parallel())
+//                ).map(s -> {
+//                    System.out.println(s);
+//                    return s;
+//                })
+//                .subscribe(System.out::println)
+
+        StepVerifier.create(test).expectNextCount(5).verifyComplete();
+//        test.subscribe(System.out::println, (e) -> System.out.println(e));
+    }
+
 
     public List<String> convertToList(String test) {
         try {
