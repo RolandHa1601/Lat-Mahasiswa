@@ -1,4 +1,4 @@
-package com.learn.reactive.app;
+package com.learn.reactive.rest.api;
 
 import com.learn.reactive.model.Kelas;
 import com.learn.reactive.model.Mahasiswa;

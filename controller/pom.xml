@@ -11,17 +11,43 @@
 
     <artifactId>controller</artifactId>
 
-    <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
-    </properties>
     <dependencies>
 <!--        <dependency>-->
 <!--            <groupId>com.learn-reactive</groupId>-->
-<!--            <artifactId>app</artifactId>-->
+<!--            <artifactId>controller</artifactId>-->
 <!--            <version>${project.version}</version>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.learn-reactive</groupId>
+            <artifactId>model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.learn-reactive</groupId>
+            <artifactId>service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.learn-reactive</groupId>
+            <artifactId>serviceImpl</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.learn-reactive</groupId>
+            <artifactId>repository</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
 <!--    <build>-->
 <!--        <plugins>-->
 <!--            <plugin>-->
@@ -33,4 +59,23 @@
 <!--            </plugin>-->
 <!--        </plugins>-->
 <!--    </build>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
 </project>
