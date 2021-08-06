@@ -6,9 +6,10 @@
     <modules>
 		<module>controller</module>
 		<module>model</module>
-		<module>Service</module>
+		<module>service</module>
 		<module>serviceImpl</module>
-		<module>Repository</module>
+		<module>repository</module>
+		<module>exception</module>
 	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>

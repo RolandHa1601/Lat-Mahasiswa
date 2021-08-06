@@ -43,14 +43,19 @@ package com.learn.reactive.service.impl;
 //}
 
 
+import com.learn.reactive.exception.LRException;
 import com.learn.reactive.model.Mahasiswa;
 import com.learn.reactive.repository.MahasiswaRepository;
 import com.learn.reactive.service.MahasiswaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @Slf4j
@@ -65,7 +70,28 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mono<Mahasiswa> updateMahasiswa(Mahasiswa mahasiswa) {
-        return mahasiswaRepository.save(mahasiswa);
+            Mahasiswa ssss = new Mahasiswa();
+            ssss.setGPA(3.1);
+            ssss.setNim("19");
+            ssss.setName("Rlnd");
+            return Mono.just(mahasiswa)
+                    .flatMap(s -> mahasiswaRepository.findById(mahasiswa.getNim()))
+                    .map(s -> {
+                        log.info(s.getName());
+                        s.setName(mahasiswa.getName());
+                        s.setGPA(mahasiswa.getGPA());
+                        return s;
+                    })
+                    .flatMap(s -> mahasiswaRepository.save(s))
+                    .map(s -> {
+                        log.info("test");
+                        return s;
+                    })
+                    .onErrorMap(er -> {
+                        log.info("error nih");
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
+                    });
+//            return mahasiswaRepository.save(mahasiswa);
     }
 
     @Override
