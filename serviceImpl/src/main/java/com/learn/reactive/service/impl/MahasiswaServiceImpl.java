@@ -29,7 +29,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa) {
         return Mono.just(mahasiswa)
             .flatMap(mhs -> mahasiswaRepository.save(mahasiswa))
-            .flatMap(mahasiswa1 -> cacheHelper.createCache(Mahasiswa.class.getTypeName() + "-" + mahasiswa1.getName() , mahasiswa1 , 0))
+            .flatMap(mahasiswa1 -> cacheHelper.createCache(Mahasiswa.class.getTypeName() + "-" + mahasiswa1.getNim() , mahasiswa1 , 0))
             .map(s -> mahasiswa)
             .onErrorMap(er ->  {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR , "error saving",er);

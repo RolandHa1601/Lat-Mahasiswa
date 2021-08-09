@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono;
 public class CacheHelper {
 
   @Autowired
-  @Qualifier("reactiveRedisTemplate")
   private ReactiveRedisTemplate<String, String> redisTemplate;
 
   private ReactiveValueOperations<String, String> operations;
