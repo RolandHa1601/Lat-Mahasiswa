@@ -14,8 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.springframework.data.domain.Page;
-import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 import org.springframework.data.domain.Pageable;
 
@@ -23,21 +21,15 @@ import org.springframework.data.domain.Pageable;
 @Slf4j
 public class MahasiswaServiceImpl implements MahasiswaService {
     @Autowired
-    MahasiswaRepository mahasiswaRepository;
+    private  MahasiswaRepository mahasiswaRepository;
 
-    private final static String MHS = "mahahasiswa";
-
-    @Autowired
-    private ReactiveRedisTemplate<String, Mahasiswa> redisTemplate;
-    public ReactiveValueOperations<String, Mahasiswa> reactiveValueOps;
+    public CacheHelper cacheHelper = new CacheHelper();
 
     @Override
     public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa) {
-      reactiveValueOps = redisTemplate.opsForValue();
         return Mono.just(mahasiswa)
             .flatMap(mhs -> mahasiswaRepository.save(mahasiswa))
-            .flatMap(mahasiswa1 -> reactiveValueOps.set(MHS + "-" + mahasiswa.getNim(),
-                mahasiswa))
+            .flatMap(mahasiswa1 -> cacheHelper.createCache(Mahasiswa.class.getTypeName() + "-" + mahasiswa1.getName() , mahasiswa1 , 0))
             .map(s -> mahasiswa)
             .onErrorMap(er ->  {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR , "error saving",er);
@@ -46,7 +38,6 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mono<Mahasiswa> updateMahasiswa(Mahasiswa mahasiswa) {
-      reactiveValueOps = redisTemplate.opsForValue();
       return Mono.just(mahasiswa)
                     .flatMap(s -> mahasiswaRepository.findById(mahasiswa.getNim()))
                     .map(s -> {
@@ -55,8 +46,9 @@ public class MahasiswaServiceImpl implements MahasiswaService {
                         return s;
                     })
                     .flatMap(s -> mahasiswaRepository.save(s))
-                .flatMap(s-> reactiveValueOps.set(MHS + "-" + s.getNim() , s))
-                .map(s -> mahasiswa)
+                    .flatMap(mahasiswa1 -> cacheHelper.createCache(
+              mahasiswa.getClass().getTypeName() + "-" + mahasiswa1.getNim(), mahasiswa1, 0))
+                    .map(s -> mahasiswa)
                     .onErrorMap(er -> {
                         log.info("error nih");
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
@@ -76,9 +68,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mono<Mahasiswa> getOneMahasiswa(String nim) {
-      reactiveValueOps = redisTemplate.opsForValue();
       return Mono.just(nim)
-            .flatMap(mhsNim -> reactiveValueOps.get(MHS + "-" + mhsNim))
+            .flatMap(mhsNim -> cacheHelper.findCache(Mahasiswa.class.getTypeName() + "-" + mhsNim , Mahasiswa.class))
 //                .switchIfEmpty(s -> Mono.just(mahasiswaRepository.findById(nim)))
                 .flatMap(s -> mahasiswaRepository.findById(nim))
                 .onErrorMap(er -> {
@@ -89,9 +80,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mono<String> deleteMahasiswa(String nim) {
-      reactiveValueOps = redisTemplate.opsForValue();
       return Mono.just(nim)
-          .flatMap(mhsNim -> reactiveValueOps.delete(MHS + "-" + mhsNim))
+          .flatMap(mhsNim -> cacheHelper.deleteCache(Mahasiswa.class.getTypeName() + "-" + mhsNim))
           .flatMap(s -> mahasiswaRepository.deleteById(nim))
           .map(a -> {
             return "ok";
