@@ -23,7 +23,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     @Autowired
     private  MahasiswaRepository mahasiswaRepository;
 
-    public CacheHelper cacheHelper = new CacheHelper();
+    @Autowired
+    private CacheHelper cacheHelper;
 
     @Override
     public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa) {
