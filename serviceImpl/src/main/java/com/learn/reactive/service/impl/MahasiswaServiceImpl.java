@@ -46,11 +46,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mono<Mahasiswa> updateMahasiswa(Mahasiswa mahasiswa) {
-            Mahasiswa ssss = new Mahasiswa();
-            ssss.setGPA(3.1);
-            ssss.setNim("19");
-            ssss.setName("Rlnd");
-            return Mono.just(mahasiswa)
+      reactiveValueOps = redisTemplate.opsForValue();
+      return Mono.just(mahasiswa)
                     .flatMap(s -> mahasiswaRepository.findById(mahasiswa.getNim()))
                     .map(s -> {
                         s.setName(mahasiswa.getName());
@@ -58,6 +55,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
                         return s;
                     })
                     .flatMap(s -> mahasiswaRepository.save(s))
+                .flatMap(s-> reactiveValueOps.set(MHS + "-" + s.getNim() , s))
+                .map(s -> mahasiswa)
                     .onErrorMap(er -> {
                         log.info("error nih");
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
