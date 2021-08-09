@@ -76,7 +76,7 @@ public class MahasiswaServiceImplTest {
 
     @Test
     public void executeSaveMahasiswa_thenSuccess() {
-        when(repository.save(mahasiswa)).thenReturn(mahasiswa);
+        when(repository.save(mahasiswa)).thenReturn(Mono.just(mahasiswa));
 
         StepVerifier.create(mahasiswaServiceImpl.saveMahasiswa(mahasiswa))
                 .expectNext(mahasiswa)
@@ -85,23 +85,23 @@ public class MahasiswaServiceImplTest {
         verify(repository).save(mahasiswa);
     }
 
-//    @Test
-//    public void executeGetAllMahasiswa_thenSuccess() {
+    @Test
+    public void executeGetAllMahasiswa_thenSuccess() {
 //        Pageable pageable = PageRequest.of(3, 2);
-//        when(repository.findAll(pageable)).thenReturn(Page.empty());
-//
-//        StepVerifier.create(mahasiswaServiceImpl.findAllMahasiswa(pageable))
-//                .expectNext(mahasiswa)
-//                .expectNext(mahasiswa2)
-//                .expectNext(mahasiswa3)
-//                .verifyComplete();
-//
-//        verify(repository).findAll(pageable);
-//    }
+        when(repository.findAll()).thenReturn(fluxMahasiswa);
+
+        StepVerifier.create(mahasiswaServiceImpl.findAllMahasiswa())
+                .expectNext(mahasiswa)
+                .expectNext(mahasiswa2)
+                .expectNext(mahasiswa3)
+                .verifyComplete();
+
+        verify(repository).findAll();
+    }
 
     @Test
     public void executeGetOneMahasiswa_thenSuccess() {
-        when(repository.findById(mahasiswa.getNim())).thenReturn(Optional.of(mahasiswa));
+        when(repository.findById(mahasiswa.getNim())).thenReturn(Mono.just(mahasiswa));
 
         StepVerifier.create(mahasiswaServiceImpl.getOneMahasiswa(mahasiswa.getNim()))
                 .expectNext(mahasiswa)
@@ -112,8 +112,8 @@ public class MahasiswaServiceImplTest {
 
     @Test
     public void executeUpdateMahasiswa_thenSuccess() {
-        when(repository.findById(mahasiswaUpdated.getNim())).thenReturn(Optional.of(mahasiswa));
-        when(repository.save(mahasiswaUpdated)).thenReturn(mahasiswaUpdated);
+        when(repository.findById(mahasiswaUpdated.getNim())).thenReturn(Mono.just(mahasiswa));
+        when(repository.save(mahasiswaUpdated)).thenReturn(Mono.just(mahasiswaUpdated));
 
         StepVerifier.create(mahasiswaServiceImpl.updateMahasiswa(mahasiswaUpdated))
                 .expectNext(mahasiswaUpdated)
@@ -123,15 +123,15 @@ public class MahasiswaServiceImplTest {
         verify(repository).save(mahasiswaUpdated);
     }
 
-//    @Test
-//    public void executeDeleteMahasiswa_thenSuccess() {
-//        when(repository.deleteById(mahasiswa.getNim()));
-//
-//        StepVerifier.create(mahasiswaServiceImpl.deleteMahasiswa(mahasiswa.getNim()))
-//                .verifyComplete();
-//
-//        verify(repository).deleteById(mahasiswa.getNim());
-//    }
+    @Test
+    public void executeDeleteMahasiswa_thenSuccess() {
+        when(repository.deleteById(mahasiswa.getNim())).thenReturn(Mono.empty());
+
+        StepVerifier.create(mahasiswaServiceImpl.deleteMahasiswa(mahasiswa.getNim()))
+                .verifyComplete();
+
+        verify(repository).deleteById(mahasiswa.getNim());
+    }
 
 
 

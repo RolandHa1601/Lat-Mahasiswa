@@ -6,8 +6,11 @@ import com.learn.reactive.model.Mahasiswa;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveValueOperations;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -29,6 +32,24 @@ public class MahasiswaControllerTest {
     private WebTestClient webTestClient;
 
     private List<Mahasiswa> listMahasiswa;
+
+    @Autowired
+    public ReactiveRedisTemplate<String, Mahasiswa> redisTemplate;
+    public ReactiveValueOperations<String, Mahasiswa> reactiveValueOps;
+//    @Before
+//    public void setup() {
+//        reactiveValueOps = redisTemplate.opsForValue();
+//    }
+
+    @Test
+    public void givenEmployee_whenSet_thenSet() {
+        reactiveValueOps = redisTemplate.opsForValue();
+        Mono<Boolean> result = reactiveValueOps.set("test",
+            new Mahasiswa("123", "Bill",  3.2));
+        StepVerifier.create(result)
+            .expectNext(true)
+            .verifyComplete();
+    }
 
 //      @Test
 //  public void getListTransactionSettingTest() {

@@ -1,5 +1,6 @@
 package com.learn.reactive.model;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,7 @@ import org.springframework.data.annotation.Id;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Mahasiswa {
+public class Mahasiswa implements Serializable {
     @Id
     private String nim;
     private String name;

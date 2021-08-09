@@ -4,7 +4,11 @@ import com.learn.reactive.model.Kelas;
 import com.learn.reactive.model.Mahasiswa;
 import com.learn.reactive.service.MahasiswaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.core.ReactiveValueOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +21,7 @@ public class MahasiswaController {
 
     @Autowired
     MahasiswaService mahasiswaService;
+
 
     @GetMapping("/getAll")
     public Flux<Mahasiswa> getAll(@RequestParam(defaultValue = "0") int page,
@@ -62,6 +67,9 @@ public class MahasiswaController {
 
     @GetMapping("/get/{nim}")
     public Mono<Mahasiswa> getMahasiswa(@PathVariable  String nim){
+//        reactiveValueOps = redisTemplate.opsForValue();
+//        return Mono.just(nim)
+//            .flatMap(s -> reactiveValueOps.get(s));
         return mahasiswaService.getOneMahasiswa(nim);
     }
 }
