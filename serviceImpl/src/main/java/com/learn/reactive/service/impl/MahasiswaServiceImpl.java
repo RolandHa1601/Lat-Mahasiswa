@@ -54,8 +54,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import org.springframework.data.domain.Page;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
+
+import org.springframework.data.domain.Pageable;
 
 @Service
 @Slf4j
@@ -65,7 +68,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa) {
-        return mahasiswaRepository.save(mahasiswa);
+//        return null;
+        return Mono.just(mahasiswaRepository.save(mahasiswa));
     }
 
     @Override
@@ -75,18 +79,15 @@ public class MahasiswaServiceImpl implements MahasiswaService {
             ssss.setNim("19");
             ssss.setName("Rlnd");
             return Mono.just(mahasiswa)
-                    .flatMap(s -> mahasiswaRepository.findById(mahasiswa.getNim()))
+                    .map(s -> mahasiswaRepository.findById(mahasiswa.getNim()))
+                    .map(s -> s.get())
                     .map(s -> {
-                        log.info(s.getName());
+                        log.info(s.getNim());
                         s.setName(mahasiswa.getName());
                         s.setGPA(mahasiswa.getGPA());
                         return s;
                     })
-                    .flatMap(s -> mahasiswaRepository.save(s))
-                    .map(s -> {
-                        log.info("test");
-                        return s;
-                    })
+                    .map(s -> mahasiswaRepository.save(s))
                     .onErrorMap(er -> {
                         log.info("error nih");
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
@@ -96,16 +97,31 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Flux<Mahasiswa> findAllMahasiswa() {
-        return mahasiswaRepository.findAll();
+        return Flux.empty();
+    }
+
+    @Override
+    public Page<Mahasiswa> findAllMahasiswaWithPaging(Pageable paging) {
+        return mahasiswaRepository.findAll(paging);
     }
 
     @Override
     public Mono<Mahasiswa> getOneMahasiswa(String nim) {
-        return mahasiswaRepository.findById(nim);
+        return Mono.just(nim)
+                .map(s -> mahasiswaRepository.findById(s))
+                .map(s -> s.get())
+                .onErrorMap(er -> {
+                    log.info("error nih");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
+                });
     }
 
     @Override
-    public Mono<Void> deleteMahasiswa(String nim) {
-        return mahasiswaRepository.deleteById(nim);
+    public Mono<String> deleteMahasiswa(String nim) {
+        mahasiswaRepository.deleteById(nim);
+        return Mono.just(nim)
+                .map(a -> {
+                    return "ok";
+                });
     }
 }

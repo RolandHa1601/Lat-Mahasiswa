@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/mahasiswa")
@@ -16,10 +19,19 @@ public class MahasiswaController {
     MahasiswaService mahasiswaService;
 
     @GetMapping("/getAll")
-    public Flux<Mahasiswa> getAll(){
-        System.out.println("testt");
+    public Flux<Mahasiswa> getAll(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size){
+        Pageable paging = PageRequest.of(page, size);
         return mahasiswaService.findAllMahasiswa();
     }
+
+    @GetMapping("/getAllMhs")
+    public Page<Mahasiswa> getAllMhs(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size){
+        Pageable paging = PageRequest.of(page, size);
+        return mahasiswaService.findAllMahasiswaWithPaging(paging);
+    }
+
 
     @PostMapping("/save")
     public Mono<Mahasiswa> saveMahasiswa(Mahasiswa mahasiswa){
@@ -31,14 +43,16 @@ public class MahasiswaController {
         return Mono.just(kelas);
     }
 
+    @PostMapping("/get-kelas")
+    public Mono<Kelas> getKelas(){
+        Kelas kelas = Kelas.builder().kodeKelas("a01").namaDosen("rnd").namaKelas("a01").build();
+        return Mono.just(kelas);
+    }
+
 
     @GetMapping("/delete/{nim}")
     public Mono<String> deleteMahasiswa(@PathVariable String nim){
-        return mahasiswaService.deleteMahasiswa(nim).map(
-                e-> {
-                    return "ok";
-                }
-        );
+        return mahasiswaService.deleteMahasiswa(nim);
     }
 
     @PutMapping("/update")
