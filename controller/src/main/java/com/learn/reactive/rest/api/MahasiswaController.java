@@ -55,7 +55,7 @@ public class MahasiswaController {
     }
 
 
-    @GetMapping("/delete/{nim}")
+    @DeleteMapping("/delete/{nim}")
     public Mono<String> deleteMahasiswa(@PathVariable String nim){
         return mahasiswaService.deleteMahasiswa(nim);
     }

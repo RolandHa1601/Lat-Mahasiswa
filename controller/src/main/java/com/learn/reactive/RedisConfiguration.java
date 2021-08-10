@@ -4,6 +4,7 @@ import com.learn.reactive.model.Mahasiswa;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -35,17 +36,18 @@ public class RedisConfiguration{
     return new LettuceConnectionFactory("localhost", 6379);
   }
 
-//  @Bean
-//  public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(
-//      ReactiveRedisConnectionFactory factory) {
-//    StringRedisSerializer keySerializer = new StringRedisSerializer();
-//    Jackson2JsonRedisSerializer<String> valueSerializer =
-//        new Jackson2JsonRedisSerializer<>(String.class);
-//    RedisSerializationContext.RedisSerializationContextBuilder<String, String> builder =
-//        RedisSerializationContext.newSerializationContext(keySerializer);
-//    RedisSerializationContext<String, String> context =
-//        builder.value(valueSerializer).build();
-//    return new ReactiveRedisTemplate<>(factory, context);
-//  }
+  @Primary
+  @Bean
+  public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(
+      ReactiveRedisConnectionFactory factory) {
+    StringRedisSerializer keySerializer = new StringRedisSerializer();
+    Jackson2JsonRedisSerializer<String> valueSerializer =
+        new Jackson2JsonRedisSerializer<>(String.class);
+    RedisSerializationContext.RedisSerializationContextBuilder<String, String> builder =
+        RedisSerializationContext.newSerializationContext(keySerializer);
+    RedisSerializationContext<String, String> context =
+        builder.value(valueSerializer).build();
+    return new ReactiveRedisTemplate<>(factory, context);
+  }
 
 }

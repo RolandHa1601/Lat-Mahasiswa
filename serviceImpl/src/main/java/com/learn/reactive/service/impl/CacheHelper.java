@@ -54,7 +54,7 @@ public class CacheHelper {
         });
   }
 
-  private <T> T objectParser(String value, Class<T> clazz) {
+  public  <T> T objectParser(String value, Class<T> clazz) {
     try {
       return new ObjectMapper().readValue(value, clazz);
     } catch (IOException throwable) {
