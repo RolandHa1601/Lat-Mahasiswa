@@ -1,55 +1,50 @@
 package demo.rest.api;
 
 import com.learn.reactive.LearnReactiveApplication;
-import com.learn.reactive.model.Kelas;
 import com.learn.reactive.model.Mahasiswa;
+import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ReactiveValueOperations;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.ArrayList;
-import java.util.List;
 
-@ContextConfiguration(classes= LearnReactiveApplication.class)
+// ini mau dilanjutin yaaa
+@ContextConfiguration(classes = LearnReactiveApplication.class)
 @ExtendWith(SpringExtension.class)
 @WebFluxTest
 public class MahasiswaControllerTest {
 
-    private Mahasiswa mahasiswa;
+  private Mahasiswa mahasiswa;
 
-    private WebTestClient webTestClient;
+  private WebTestClient webTestClient;
 
-    private List<Mahasiswa> listMahasiswa;
+  private List<Mahasiswa> listMahasiswa;
 
-    @Autowired
-    public ReactiveRedisTemplate<String, Mahasiswa> redisTemplate;
-    public ReactiveValueOperations<String, Mahasiswa> reactiveValueOps;
+  @Autowired
+  public ReactiveRedisTemplate<String, Mahasiswa> redisTemplate;
+  public ReactiveValueOperations<String, Mahasiswa> reactiveValueOps;
 //    @Before
 //    public void setup() {
 //        reactiveValueOps = redisTemplate.opsForValue();
 //    }
 
-    @Test
-    public void givenEmployee_whenSet_thenSet() {
-        reactiveValueOps = redisTemplate.opsForValue();
-        Mono<Boolean> result = reactiveValueOps.set("test",
-            new Mahasiswa("123", "Bill",  3.2));
-        StepVerifier.create(result)
-            .expectNext(true)
-            .verifyComplete();
-    }
+  @Test
+  public void givenEmployee_whenSet_thenSet() {
+    reactiveValueOps = redisTemplate.opsForValue();
+    Mono<Boolean> result = reactiveValueOps.set("test",
+        new Mahasiswa("123", "Bill", 3.2));
+    StepVerifier.create(result)
+        .expectNext(true)
+        .verifyComplete();
+  }
 
 //      @Test
 //  public void getListTransactionSettingTest() {

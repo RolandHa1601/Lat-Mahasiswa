@@ -1,6 +1,5 @@
 package com.learn.reactive;
 
-import com.learn.reactive.model.Mahasiswa;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @Slf4j
-public class RedisConfiguration{
+public class RedisConfiguration {
 
 
   @Bean
