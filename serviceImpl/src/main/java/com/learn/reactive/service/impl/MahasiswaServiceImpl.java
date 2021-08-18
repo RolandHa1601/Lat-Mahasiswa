@@ -37,10 +37,9 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     public Mono<Mahasiswa> updateMahasiswa(Mahasiswa mahasiswa) {
       return Mono.just(mahasiswa)
                     .flatMap(s -> mahasiswaRepository.findById(mahasiswa.getNim()))
-                    .map(s -> {
+                    .doOnNext(s -> {
                         s.setName(mahasiswa.getName());
                         s.setGPA(mahasiswa.getGPA());
-                        return s;
                     })
                     .flatMap(s -> mahasiswaRepository.save(s))
                     .flatMap(mahasiswa1 -> cacheHelper.createCache(
@@ -66,11 +65,15 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     public Mono<Mahasiswa> getOneMahasiswa(String nim) {
       return Mono.just(nim)
             .flatMap(mhsNim -> cacheHelper.findCache(Mahasiswa.class.getTypeName() + "-" + mhsNim , Mahasiswa.class))
-                .flatMap(s -> mahasiswaRepository.findById(nim))
-                .onErrorMap(er -> {
-                    log.info("error nih");
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
-                });
+                .switchIfEmpty(Mono.defer( () -> mahasiswaRepository.findById(nim)
+                    .onErrorMap(er -> {
+                      log.info("error nih");
+                      throw new ResponseStatusException(HttpStatus.NOT_FOUND , "not found mahasiswa",er);
+                    })
+                ))
+               ;
+
+
     }
 
     @Override

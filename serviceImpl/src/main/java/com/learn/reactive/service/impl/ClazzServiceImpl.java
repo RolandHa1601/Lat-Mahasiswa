@@ -2,11 +2,14 @@ package com.learn.reactive.service.impl;
 
 import com.learn.reactive.exception.LRException;
 import com.learn.reactive.model.dao.Clazz;
+import com.learn.reactive.model.dto.CheckTicketStatusRequest;
+import com.learn.reactive.model.dto.CheckTicketStatusResponse;
 import com.learn.reactive.model.dto.ClazzRequest;
 import com.learn.reactive.repository.ClazzRepository;
 import com.learn.reactive.service.ClazzService;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.protocol.types.Field.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -56,6 +59,11 @@ public class ClazzServiceImpl implements ClazzService {
             .thenReturn(clazz))
         .doOnNext(clazz -> log.info("Success updated class {}", clazz))
         .switchIfEmpty(Mono.defer(() -> Mono.error(new LRException("Class id not found"))));
+  }
+
+  @Override
+  public Mono<CheckTicketStatusResponse> checkTicketStatus(CheckTicketStatusRequest checkTicketStatusRequest) {
+    return Mono.just(CheckTicketStatusResponse.builder().build());
   }
 
   @Override

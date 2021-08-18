@@ -1,6 +1,8 @@
 package com.learn.reactive.rest.api;
 
 import com.learn.reactive.model.dao.Clazz;
+import com.learn.reactive.model.dto.CheckTicketStatusRequest;
+import com.learn.reactive.model.dto.CheckTicketStatusResponse;
 import com.learn.reactive.model.dto.ClazzRequest;
 import com.learn.reactive.service.ClazzService;
 import java.util.List;
@@ -52,5 +54,14 @@ public class ClazzClientController {
     return clazzService.findAll()
         .collectList();
   }
+
+  @PostMapping(path = "/ticket-status")
+  public Mono<CheckTicketStatusResponse> getAirAsiaTiketStatus(@RequestBody
+      CheckTicketStatusRequest checkTicketStatusRequest
+  ) {
+    return clazzService.checkTicketStatus(checkTicketStatusRequest);
+//        .subscribeOn(getAirAsiaStatus);
+  }
+
 
 }
