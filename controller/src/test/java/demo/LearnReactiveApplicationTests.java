@@ -1,12 +1,12 @@
 package demo;
 
-import org.springframework.boot.test.context.SpringBootTest;
+//import org.junit.Ignore;
+//import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class LearnReactiveApplicationTests {
-
-//	@Test
-//	void contextLoads() {
-//	}
-
-}
+//class LearnReactiveApplicationTests {
+//
+////	@Test
+////	void contextLoads() {
+////	}
+//
+//}
